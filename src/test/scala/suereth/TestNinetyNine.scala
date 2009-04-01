@@ -222,6 +222,42 @@ class TestNinetyNine {
     assertEquals(expected, actual)
   }
   
+  
+  @Test def x_31_isPrime() {
+    
+    def isPrime(a : Int) : Boolean = {
+      val results = for(i <- 2 until a; if a % i == 0) yield i
+      results.firstOption.isEmpty
+    }
+    
+    assertFalse(isPrime(4))
+    assertTrue(isPrime(17))
+  }
+  
+  def gcd(a : Int, b : Int) : Int = (a,b) match {
+     case (a, 0) => a
+     case (a, b) => gcd(b, a % b)
+  }
+  @Test def x_32_gcd() {
+    
+    assertEquals(4, gcd(12, 8))
+    assertEquals(5, gcd(15, 20))
+  }
+
+  @Test def x_33_is_coprime() {
+    def isCoprime(a : Int, b:Int) = gcd(a,b) == 1
+    assertTrue(isCoprime(12, 5))
+    assertFalse(isCoprime(15, 20))
+  }
+  
+  @Test def x_34_totient() {
+    def totient(a : Int) : Int = (for(i <- 0 until a; if gcd(i,a) == 1) yield i).length  //TODO - Don't be so lazy
+    
+    assertEquals(4, totient(10))
+  }
+  
+
+  
   @Test def x_96_syntax() {
     import util.parsing._
     import combinator._

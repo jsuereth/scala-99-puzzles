@@ -140,8 +140,17 @@ class TestNinetyNine {
   }
   
   @Test def x_13_encode_direct() {
-    def encode_direct(list : List[Any]) : List[_] = {
-      Nil
+    def encode_direct(list : List[Any]) : List[_] = list match {
+      case head :: tail =>
+          def extractLike(current : Any, count : Int, remainder : List[Any]) : (Int, List[_]) = remainder match {
+            case head :: tail if head == current => extractLike(current, count + 1, tail)
+            case x => (count, x)
+          }
+          extractLike(head, 1, tail) match {
+            case (1, remainder) => head :: encode_direct(remainder)  
+            case (n, remainder) => (n, head) :: encode_direct(remainder)
+          }             
+      case Nil => Nil
     }
     
     val expected = List((4,'a), 'b, (2,'c), (2,'a), 'd, (4,'e))

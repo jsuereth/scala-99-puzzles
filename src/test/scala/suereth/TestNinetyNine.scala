@@ -166,21 +166,21 @@ class TestNinetyNine {
   }
   
   @Test def x_16_drop() {
-    def drop(n : Int, list : List[Any]) : List[Any] = list.zipWithIndex.filter(_._2 % n != 0).map(_._1)
+    def drop(n : Int, list : List[Any]) : List[Any] = list.zipWithIndex.filter { case(list, idx) => (idx+1) % n != 0 }.map(_._1)
     
     val expected =  List('a, 'b, 'd, 'e, 'g, 'h, 'j, 'k)
     val actual = drop(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
     assertEquals(expected, actual)
   }
   
+  def split(n : Int, list : List[Any]) : (List[Any], List[Any]) = list match {
+     case head :: tail if n == 1 => (List(head), tail)
+     case head :: tail => 
+     val (front, back) = split(n-1, tail)
+     (head :: front, back)
+     case _ => (Nil, Nil)
+  }
   @Test def x_17_split() {
-    def split(n : Int, list : List[Any]) : (List[Any], List[Any]) = list match {
-      case head :: tail if n == 0 => (List(head), tail)
-      case head :: tail => 
-        val (front, back) = split(n-1, tail)
-        (head :: front, back)
-      case _ => (Nil, Nil)
-    }
     val expected =  (List('a, 'b, 'c),List('d, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
     val actual = split(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
     assertEquals(expected, actual)
@@ -199,15 +199,14 @@ class TestNinetyNine {
   }
   
   @Test def x_19_rotate() {
-    def rotate(n : Int, list : List[Any]) : List[Any] = list match {
-      case head :: tail if n >= 0 => rotate(n-1, tail) ::: List(head)
-      case x => x
-      
+    def rotate(n : Int, list : List[Any]) : List[Any] = {
+      val (head, foot) = split(n, list)
+      foot ::: head
     }
     val actual = rotate(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
     val expected = List('d, 'e, 'f, 'g, 'h, 'i, 'j, 'k, 'a, 'b, 'c)
     assertEquals(expected, actual)
-    
+    //TODO - Handle this case
     val actual2 =  rotate(-2, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
     val expected2 = List('j, 'k, 'a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i)
     assertEquals(expected2, actual2)

@@ -214,8 +214,12 @@ class TestNinetyNine {
   }
   
   @Test def x_20_remove_at() {
-    def remove_at(n : int, list : List[Any]) : (List[Any], Any) = {
-      (Nil, null)
+    def remove_at(n : Int, list : List[Any]) : (List[Any], Any) = list match {
+      case head :: tail if n == 0 => (tail, head)
+      case head :: tail =>   
+        val (result,found) = remove_at(n-1, tail)
+        (head :: result, found)
+      case Nil => (Nil, null)
     }
     val actual =  remove_at(1, List('a, 'b, 'c, 'd))
     val expected = (List('a, 'c, 'd),'b)

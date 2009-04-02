@@ -130,7 +130,7 @@ class TestNinetyNine {
   @Test def x_12_decodeModified() {
     def decodeModified(items : List[_]) : List[Any] = {
       items flatMap {
-        case (n : Int, item) => (0 until n).map( x => item).toList
+        case (n : Int, item) => (0 until n).map( x => item).toList //Stream.make would be easier, based on Tony's solution
         case item => List(item)
       }
     }
@@ -209,7 +209,7 @@ class TestNinetyNine {
   
   @Test def x_19_rotate() {
     def rotate(n : Int, list : List[Any]) : List[Any] = {
-      val (head, foot) = split(n, list)
+      val (head, foot) = split(if(n < 0) n + list.length else n, list)
       foot ::: head
     }
     val actual = rotate(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
